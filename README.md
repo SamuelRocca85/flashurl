@@ -8,9 +8,6 @@ A single place to store all your important links and share them.
 
 - [Docker](https://www.docker.com)
 - [Git](https://git-scm.com/)
-- [Go](https://go.dev/)
-- [Node.js](https://nodejs.org/)
-- [Pnpm](https://pnpm.io/)
 
 ## 🚀 Quick Start
 
@@ -21,7 +18,13 @@ git clone https://github.com/SamuelRocca85/flashurl.git
 cd flashurl
 ```
 
-2. 📦 Build Docker containers
+2. Populate env file
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+3. 📦 Build Docker containers
 
 ```bash
 docker compose up
@@ -33,6 +36,4 @@ Or use detached mode
 docker compose up -d
 ```
 
-3. 📦 Access the application
-
-http://localhost
+4. 📦 Access the application `http://localhost`
