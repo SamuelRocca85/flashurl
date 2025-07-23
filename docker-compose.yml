@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: flashurl
+      POSTGRES_PASSWORD: my_secure_password
+      POSTGRES_DB: flashurl
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: pg_isready -U flashurl
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  api:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    ports: ['4000:4000']
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    build: ./frontend
+    ports: ['80:80']
+    depends_on: [api]
+volumes:
+  pgdata:
