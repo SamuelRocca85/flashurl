@@ -1,4 +1,8 @@
 import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import UrlCard from './components/UrlCard'
+import Header from './components/Header'
 
 function App() {
   const [urls, setUrls] = useState<any[]>([])
@@ -28,7 +32,7 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setUrls((prev) => [...prev, data.data])
+        setUrls((prev) => [data.data, ...prev])
         setUrl('')
       })
       .catch((err) => {
@@ -38,25 +42,42 @@ function App() {
 
   return (
     <div>
-      <h1>Flashurl</h1>
-      <ul>
-        {urls.map((url: any) => (
-          <li key={url.id}>{url.long_url}</li>
-        ))}
-      </ul>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          handleSubmit()
-        }}
-      >
-        <input
-          type='url'
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <button type='submit'>Submit</button>
-      </form>
+      <Header />
+      <main className='w-screen max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto my-5'>
+        <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSubmit()
+            }}
+            className='flex gap-2'
+          >
+            <Input
+              type='url'
+              className='max-w-md'
+              value={url}
+              placeholder='Paste your URL here'
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <Button type='submit'>Submit</Button>
+          </form>
+          <div className='flex items-center justify-start flex-wrap gap-2 mt-2'>
+            {urls.map((url: any) => (
+              <UrlCard
+                key={url.id}
+                title={'Web name'}
+                description={
+                  'This is a very long web description to test the card'
+                }
+                url={url.long_url}
+                shortUrl={url.short_url}
+                previewSrc={'Web preview'}
+              />
+            ))}
+          </div>
+        </div>
+      </main>
+      <footer></footer>
     </div>
   )
 }
