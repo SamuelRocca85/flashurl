@@ -3,21 +3,28 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import UrlCard from './components/UrlCard'
 import Header from './components/Header'
+import useAxios from './lib/useAxios'
+
+type Url = {
+  id: string
+  long_url: string
+  short_url: string
+}
 
 function App() {
-  const [urls, setUrls] = useState<any[]>([])
   const [url, setUrl] = useState('')
 
-  const loadUrls = () => {
-    fetch(import.meta.env.VITE_API_URL + '/urls')
-      .then((res) => res.json())
-      .then((data) => {
-        setUrls(data.urls)
-      })
-  }
+  const {
+    data: urls,
+    loading,
+    fetchResponse,
+    setData: setUrls,
+  } = useAxios<Url[]>({
+    defaultValue: [],
+  })
 
   useEffect(() => {
-    loadUrls()
+    fetchResponse('/urls')
   }, [])
 
   const handleSubmit = () => {
@@ -31,14 +38,16 @@ function App() {
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        setUrls((prev) => [data.data, ...prev])
+      .then((data: { data: Url }) => {
+        setUrls((prevUrls: Url[]) => [data.data, ...prevUrls])
         setUrl('')
       })
       .catch((err) => {
         console.error(err)
       })
   }
+
+  if (loading || !urls) return <p>Loading...</p>
 
   return (
     <div>
@@ -62,7 +71,7 @@ function App() {
             <Button type='submit'>Submit</Button>
           </form>
           <div className='flex items-center justify-start flex-wrap gap-2 mt-2'>
-            {urls.map((url: any) => (
+            {urls.map((url: Url) => (
               <UrlCard
                 key={url.id}
                 title={'Web name'}

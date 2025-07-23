@@ -140,7 +140,5 @@ func GetUrls(c *gin.Context) {
 	var urls []models.Url
 	db := config.GetDB()
 	db.Find(&urls)
-	c.JSON(http.StatusOK, gin.H{
-		"urls": urls,
-	})
+	c.JSON(http.StatusOK, urls)
 }
