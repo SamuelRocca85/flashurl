@@ -1,5 +1,6 @@
 import { ModeToggle } from './ModeToggle'
 import logo from '@/assets/images/logos/logo.png'
+import ProfileButton from './ProfileButton'
 
 const Header = () => {
   return (
@@ -9,8 +10,9 @@ const Header = () => {
         <span className='text-xl'>FlashURL</span>
       </div>
       <div></div>
-      <div>
+      <div className='flex items-center justify-center gap-2'>
         <ModeToggle />
+        <ProfileButton />
       </div>
     </header>
   )
