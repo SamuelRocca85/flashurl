@@ -27,9 +27,9 @@ const UrlCard = ({
   title,
   description,
   url,
-  shortUrl,
-  previewSrc,
-}: UrlCardProps) => {
+}: // shortUrl,
+// previewSrc,
+UrlCardProps) => {
   return (
     <Card className='py-0 pb-6 gap-3 w-[250px]'>
       <CardHeader className='p-0 max-w-[250px] flex flex-col gap-2'>
