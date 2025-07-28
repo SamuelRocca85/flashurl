@@ -9,4 +9,5 @@ func SetupRoutes(r *gin.Engine) {
 	r.POST("/shorten", controllers.Shorten)
 	r.GET("/:id", controllers.RedirectUrl)
 	r.GET("/urls", controllers.GetUrls)
+	r.GET("/dashboard/:id", controllers.GetUrl)
 }

@@ -5,15 +5,20 @@ import Home from './Home.tsx'
 import { ThemeProvider } from '@/components/theme-provider'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import BaseLayout from './BaseLayout.tsx'
+import UrlDashoboard from './UrlDashoboard.tsx'
 
 const router = createBrowserRouter([
   {
-    element: <BaseLayout />,
+    path: '/',
+    Component: BaseLayout,
     children: [
       {
         index: true,
-        path: '/',
-        element: <Home />,
+        Component: Home,
+      },
+      {
+        path: 'dashboard/:id',
+        Component: UrlDashoboard,
       },
     ],
   },
@@ -21,7 +26,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider>
+    <ThemeProvider defaultTheme='dark'>
       <RouterProvider router={router} />
     </ThemeProvider>
   </StrictMode>

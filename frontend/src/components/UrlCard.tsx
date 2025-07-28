@@ -14,11 +14,13 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Copy, Link } from 'lucide-react'
+import { useNavigate } from 'react-router'
 
 type UrlCardProps = {
   title: string
   description: string
   url: string
+  id: string
   shortUrl: string
   previewSrc: string
 }
@@ -27,12 +29,18 @@ const UrlCard = ({
   title,
   description,
   url,
+  id,
 }: // shortUrl,
 // previewSrc,
 UrlCardProps) => {
+  const navigate = useNavigate()
+
   return (
     <Card className='py-0 pb-6 gap-3 w-[250px]'>
-      <CardHeader className='p-0 max-w-[250px] flex flex-col gap-2'>
+      <CardHeader
+        onClick={() => navigate(`/dashboard/${id}`)}
+        className='p-0 max-w-[250px] flex flex-col gap-2'
+      >
         <div className='mb-4'>
           <div className='relative overflow-hidden bg-contain bg-no-repeat'>
             <img

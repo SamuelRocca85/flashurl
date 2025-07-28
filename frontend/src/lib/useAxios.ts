@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type HttpMethod = 'patch' | 'get' | 'post' | 'put' | 'delete'
 
@@ -8,18 +8,29 @@ type UseAxios<T> = {
     loading: boolean
     error: any
     fetchResponse: (url: string, method?: HttpMethod, body?: any, onSuccess?: (data: T) => void, onError?: (error: any) => void) => Promise<void>
-    setData: (data: T | ((prev: T) => T)) => void
+    setData: React.Dispatch<React.SetStateAction<T | undefined>>
 }
 
-const useAxios: <T>({ defaultValue }: { defaultValue: T }) => UseAxios<T> = <T>({ defaultValue }: { defaultValue: T }) => {
+type HookProps<T> = {
+    defaultValue?: T
+    url?: string
+}
+
+const useAxios: <T>(props: HookProps<T>) => UseAxios<T> = <T>(props: HookProps<T>) => {
     axios.defaults.baseURL = import.meta.env.VITE_API_URL
-    const [data, setData] = useState<T>(defaultValue)
+    const [data, setData] = useState<T | undefined>(props.defaultValue)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<any>()
 
+    useEffect(() => {
+        if (props.url) {
+            fetchResponse(props.url)
+        }
+    }, [])
+
     const fetchResponse = async (url: string, method: HttpMethod = 'get', body?: any, onSuccess?: (data: T) => void, onError?: (error: any) => void) => {
         setLoading(true)
-        console.log("Fetching " + import.meta.env.VITE_API_URL + url)
+        // console.log("Fetching " + import.meta.env.VITE_API_URL + url)
         try {
             const response = await axios({
                 url,

@@ -38,7 +38,10 @@ function Home() {
     })
       .then((res) => res.json())
       .then((data: { data: Url }) => {
-        setUrls((prevUrls: Url[]) => [data.data, ...prevUrls])
+        setUrls((prevUrls: Url[] | undefined) => [
+          data.data,
+          ...(prevUrls || []),
+        ])
         setUrl('')
       })
       .catch((err) => {
@@ -73,6 +76,7 @@ function Home() {
             title={'Web name'}
             description={'This is a very long web description to test the card'}
             url={url.long_url}
+            id={url.id}
             shortUrl={url.short_url}
             previewSrc={'Web preview'}
           />

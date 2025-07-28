@@ -142,3 +142,35 @@ func GetUrls(c *gin.Context) {
 	db.Find(&urls)
 	c.JSON(http.StatusOK, urls)
 }
+
+func GetUrl(c *gin.Context) {
+	id := c.Param("id")
+
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid ID",
+		})
+		return
+	}
+
+	var url models.Url
+
+	db := config.GetDB()
+	result := db.First(&url, "id = ?", id)
+
+	if result.Error != nil {
+		message := result.Error.Error()
+		if message == "record not found" {
+			c.JSON(http.StatusNotFound, gin.H{
+				"message": "url not found",
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Something went wrong",
+			})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, url)
+}
