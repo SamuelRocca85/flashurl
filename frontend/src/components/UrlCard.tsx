@@ -1,29 +1,23 @@
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import notFound from '@/assets/images/not_found_preview.png'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { Copy, Link } from 'lucide-react'
-import { useNavigate } from 'react-router'
+} from '@/components/ui/card';
+import notFound from '@/assets/images/not_found_preview.png';
+import { Link } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import CopyButton from './CopyButton';
 
 type UrlCardProps = {
-  title: string
-  description: string
-  url: string
-  id: string
-  shortUrl: string
-  previewSrc: string
-}
+  title: string;
+  description: string;
+  url: string;
+  id: string;
+  shortUrl: string;
+  previewSrc: string;
+};
 
 const UrlCard = ({
   title,
@@ -33,7 +27,7 @@ const UrlCard = ({
 }: // shortUrl,
 // previewSrc,
 UrlCardProps) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <Card className='py-0 pb-6 gap-3 w-[250px]'>
@@ -51,7 +45,7 @@ UrlCardProps) => {
             />
             <div
               onClick={() => {
-                console.log(url)
+                console.log(url);
               }}
               className='group rounded-t-xl cursor-pointer flex items-center justify-center gap-2 absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden dark:bg-slate-900/0 bg-slate-200/0 bg-fixed transition duration-300 ease-in-out dark:hover:bg-slate-900/70 hover:bg-slate-100/70'
             >
@@ -64,24 +58,14 @@ UrlCardProps) => {
         </div>
       </CardHeader>
       <CardContent className='m-0'>
-        <CardTitle>{title}</CardTitle>
+        <div className='flex flex-row gap-2 items-center justify-start'>
+          <CardTitle>{title}</CardTitle>
+          <CopyButton text={url} />
+        </div>
         <CardDescription>{description}</CardDescription>
       </CardContent>
-      <CardFooter className='flex gap-2'>
-        <CardAction className='items-end'>
-          <Tooltip>
-            <TooltipTrigger>
-              <Copy className='cursor-pointer' />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Copy</p>
-            </TooltipContent>
-          </Tooltip>
-        </CardAction>
-        {/* <CardAction>Go to link</CardAction> */}
-      </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
-export default UrlCard
+export default UrlCard;
