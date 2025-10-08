@@ -9,9 +9,9 @@ A single place to store all your important links and share them.
 - [Docker](https://www.docker.com)
 - [Git](https://git-scm.com/)
 
-## 🚀 Quick Start
+## Quick Start
 
-1. 📦 Clone repository
+1. Clone repository
 
 ```bash
 git clone https://github.com/SamuelRocca85/flashurl.git
@@ -24,7 +24,7 @@ cd flashurl
 cp backend/.env.example backend/.env
 ```
 
-3. 📦 Build Docker containers
+3. Build Docker containers
 
 ```bash
 docker compose up
@@ -36,4 +36,4 @@ Or use detached mode
 docker compose up -d
 ```
 
-4. 📦 Access the application `http://localhost`
+4. Access the application `http://localhost`
