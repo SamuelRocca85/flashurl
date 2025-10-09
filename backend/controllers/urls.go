@@ -3,6 +3,8 @@ package controllers
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -11,6 +13,7 @@ import (
 
 	"net/url"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/SamuelRocca85/flashurl/config"
 	"github.com/SamuelRocca85/flashurl/models"
 	"github.com/gin-gonic/gin"
@@ -43,6 +46,49 @@ func generateID(length int) (string, error) {
 	return base64.URLEncoding.EncodeToString(randomBytes), nil
 }
 
+func fetchUrlMetadata(url string) (map[string]any, error) {
+	res, err := http.Get(url)
+
+	if err != nil {
+		return nil, errors.New("error while loading url metadata")
+	}
+
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+
+	if err != nil {
+		return nil, errors.New("error while loading url metadata")
+	}
+
+	var md map[string]any = make(map[string]any)
+	md["title"] = doc.Find("title").Text()
+
+	doc.Find("meta").Each(func(i int, s *goquery.Selection) {
+
+		name, existsName := s.Attr("name")
+		property, existsProperty := s.Attr("property")
+		var value string
+
+		if existsName {
+			value = name
+		} else if existsProperty {
+			value = property
+		}
+
+		if existsName || existsProperty {
+			content, _ := s.Attr("content")
+			splitName := strings.Split(value, ":")
+
+			if len(splitName) == 2 || splitName[0] == "og" || splitName[0] == "twitter" {
+				md[splitName[1]] = content
+			}
+		}
+	})
+
+	return md, nil
+}
+
 type UrlDTO struct {
 	Url string `json:"url"`
 }
@@ -64,12 +110,12 @@ func Shorten(c *gin.Context) {
 		})
 		return
 	}
-	if !isValidURL(data.Url) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": data.Url + " is not a valid url",
-		})
-		return
-	}
+	// if !isValidURL(data.Url) {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"message": data.Url + " is not a valid url",
+	// 	})
+	// 	return
+	// }
 	var url models.Url
 	id, err := generateID(8)
 	if err != nil {
@@ -83,6 +129,17 @@ func Shorten(c *gin.Context) {
 	url.LongUrl = data.Url
 	url.ShortUrl = os.Getenv("SITE_URL") + "/" + id
 	db := config.GetDB()
+
+	metadata, err := fetchUrlMetadata(data.Url)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong, try again later"})
+		return
+	}
+
+	for k, v := range metadata {
+		fmt.Printf("%s: %s\n", k, v)
+	}
 
 	result := db.Create(&url)
 
