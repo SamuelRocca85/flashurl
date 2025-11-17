@@ -7,10 +7,13 @@ import (
 )
 
 type Url struct {
-	ID        string `gorm:"primaryKey" json:"id"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	LongUrl   string         `json:"long_url"`
-	ShortUrl  string         `json:"short_url" gorm:"unique"`
+	ID          string `gorm:"primaryKey" json:"id"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	LongUrl     string         `json:"long_url"`
+	ShortUrl    string         `json:"short_url" gorm:"unique"`
+	Title       string         `json:"title"`
+	Description string         `json:"description" gorm:"default:No description provided"`
+	Image       string         `json:"image"`
 }

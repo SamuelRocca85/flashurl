@@ -11,30 +11,13 @@ import (
 	"os"
 	"strings"
 
-	"net/url"
+	"net/mail"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/SamuelRocca85/flashurl/config"
 	"github.com/SamuelRocca85/flashurl/models"
 	"github.com/gin-gonic/gin"
 )
-
-func isValidURL(urlStr string) bool {
-	_, err := url.ParseRequestURI(urlStr)
-	if err != nil {
-		return false
-	}
-
-	u, err := url.Parse(urlStr)
-	if err != nil || u.Scheme == "" || u.Host == "" {
-		return false
-	}
-	var hosts = strings.Split(u.Host, ".")
-	if len(hosts) != 2 || hosts[0] == "" || hosts[1] == "" {
-		return false
-	}
-	return true
-}
 
 func generateID(length int) (string, error) {
 	randomBytes := make([]byte, length)
@@ -110,12 +93,13 @@ func Shorten(c *gin.Context) {
 		})
 		return
 	}
-	// if !isValidURL(data.Url) {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"message": data.Url + " is not a valid url",
-	// 	})
-	// 	return
-	// }
+	if _, err := mail.ParseAddress(data.Url); err == nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": data.Url + " is not a valid url",
+		})
+		return
+	}
+
 	var url models.Url
 	id, err := generateID(8)
 	if err != nil {
@@ -138,7 +122,14 @@ func Shorten(c *gin.Context) {
 	}
 
 	for k, v := range metadata {
-		fmt.Printf("%s: %s\n", k, v)
+		switch k {
+		case "title":
+			url.Title = fmt.Sprintf("%v", v)
+		case "description":
+			url.Description = fmt.Sprintf("%v", v)
+		case "image":
+			url.Image = fmt.Sprintf("%v", v)
+		}
 	}
 
 	result := db.Create(&url)

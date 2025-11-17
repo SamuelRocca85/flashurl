@@ -8,6 +8,9 @@ type Url = {
   id: string
   long_url: string
   short_url: string
+  title: string
+  description: string
+  image: string
 }
 
 function Home() {
@@ -49,6 +52,10 @@ function Home() {
       })
   }
 
+  useEffect(() => {
+    console.log(urls)
+  }, [urls])
+
   if (loading || !urls) return <p>Loading...</p>
 
   return (
@@ -73,12 +80,12 @@ function Home() {
         {urls.map((url: Url) => (
           <UrlCard
             key={url.id}
-            title={'Web name'}
-            description={'This is a very long web description to test the card'}
+            title={url.title}
+            description={url.description}
             url={url.long_url}
             id={url.id}
             shortUrl={url.short_url}
-            previewSrc={'Web preview'}
+            previewSrc={url.image}
           />
         ))}
       </div>
